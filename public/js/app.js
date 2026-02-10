@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = '';
 
         currentData.consecutive.forEach(row => {
-            renderAggRow(tbody, row);
+            renderAggRow(tbody, row, false);
         });
     }
 
@@ -153,11 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = '';
 
         currentData.grouped.forEach(row => {
-            renderAggRow(tbody, row);
+            renderAggRow(tbody, row, true);
         });
     }
 
-    function renderAggRow(tbody, row) {
+    function renderAggRow(tbody, row, isGrouped) {
         const tr = document.createElement('tr');
 
         if (row.is_pause) {
@@ -180,14 +180,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const intClass = getStatusColor(row.status_intern);
         const jiraClass = getStatusColor(row.status_jira);
 
-        // Render standard aggregated row (7 columns including Start/End for both tables now)
-        tr.innerHTML = `
+        let html = '';
+
+        if (!isGrouped) {
+            html += `
              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
                 ${start ? start.substring(0, 5) : '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
                 ${end ? end.substring(0, 5) : '-'}
-            </td>
+            </td>`;
+        }
+
+        html += `
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium font-mono">
                 ${row.task_id}
             </td>
@@ -209,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </td>
         `;
 
+        tr.innerHTML = html;
         tbody.appendChild(tr);
     }
 

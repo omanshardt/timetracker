@@ -150,8 +150,17 @@ try {
         $status_intern = $get_status($intern_counts, $count);
         $status_jira = $get_status($jira_counts, $count);
 
-        $dur_real = calculate_duration($start_real, $end_real);
-        $dur_tracking = calculate_duration($start_tracking, $end_tracking);
+        // Span Duration (Min Start to Max End)
+        $dur_real_span = calculate_duration($start_real, $end_real);
+        $dur_tracking_span = calculate_duration($start_tracking, $end_tracking);
+
+        // Sum Duration (Sum of individual tasks)
+        $dur_real_sum = 0;
+        $dur_tracking_sum = 0;
+        foreach ($rows as $r) {
+            $dur_real_sum += $r['duration_real_min'] ?? 0;
+            $dur_tracking_sum += $r['duration_tracking_min'] ?? 0;
+        }
 
         return [
             'task_id' => $first['task_id'],
@@ -160,8 +169,10 @@ try {
             'end_real' => $end_real,
             'start_tracking' => $start_tracking,
             'end_tracking' => $end_tracking,
-            'duration_real_formatted' => format_duration($dur_real),
-            'duration_tracking_formatted' => format_duration($dur_tracking),
+            'duration_real_span_formatted' => format_duration($dur_real_span),
+            'duration_tracking_span_formatted' => format_duration($dur_tracking_span),
+            'duration_real_sum_formatted' => format_duration($dur_real_sum),
+            'duration_tracking_sum_formatted' => format_duration($dur_tracking_sum),
             'status_intern' => $status_intern,
             'status_jira' => $status_jira,
             'is_pause' => $is_pause
@@ -170,6 +181,7 @@ try {
 
     // --- 2. Consecutive Aggregation ---
     // Rule: Exclude transfer=0
+    // Uses Span Duration
     $consecutive_data = [];
     $current_chunk = [];
     $last_task_id = null;
@@ -179,18 +191,26 @@ try {
             continue;
 
         if ($last_task_id !== null && $row['task_id'] != $last_task_id) {
-            $consecutive_data[] = aggregate_rows($current_chunk);
+            $agg = aggregate_rows($current_chunk);
+            // Consecutive uses SPAN duration
+            $agg['duration_real_formatted'] = $agg['duration_real_span_formatted'];
+            $agg['duration_tracking_formatted'] = $agg['duration_tracking_span_formatted'];
+            $consecutive_data[] = $agg;
             $current_chunk = [];
         }
         $current_chunk[] = $row;
         $last_task_id = $row['task_id'];
     }
     if (!empty($current_chunk)) {
-        $consecutive_data[] = aggregate_rows($current_chunk);
+        $agg = aggregate_rows($current_chunk);
+        $agg['duration_real_formatted'] = $agg['duration_real_span_formatted'];
+        $agg['duration_tracking_formatted'] = $agg['duration_tracking_span_formatted'];
+        $consecutive_data[] = $agg;
     }
 
     // --- 3. Grouped Aggregation ---
     // Rule: Exclude transfer=0. Group ALL by ID.
+    // Uses SUM Duration
     $grouped_map = [];
     foreach ($processed_raw as $row) {
         if ($row['transfer'] == 0)
@@ -204,19 +224,11 @@ try {
 
     $grouped_data = [];
     foreach ($grouped_map as $tid => $rows) {
-        // For grouped, start is min(all starts), end is max(all ends) -> WAIT.
-        // If I have 9-10 and 14-15.
-        // "smallest start_time ... and largest end_time"
-        // 9:00 ... 15:00. 
-        // Duration? "calculated: end_time - start_time".
-        // If the prompt strictly means diff between min-start and max-end, that includes the gap.
-        // "Duration (calculated: end_time - start_time in hh:mm)" -> This usually implies simple arithmetic on the displayed bounds.
-        // Let's stick to the prompt's instruction.
-
-        // However, for Multi-Block groups, the description aggregation logic is simpler.
-        // Let's reuse aggregate_rows but we need to sort them by time first to ensure start/end logic holds if needed,
-        // although min/max works regardless of order.
-        $grouped_data[] = aggregate_rows($rows);
+        $agg = aggregate_rows($rows);
+        // Grouped uses SUM duration
+        $agg['duration_real_formatted'] = $agg['duration_real_sum_formatted'];
+        $agg['duration_tracking_formatted'] = $agg['duration_tracking_sum_formatted'];
+        $grouped_data[] = $agg;
     }
 
     // --- 4. Summaries (Footer) ---
