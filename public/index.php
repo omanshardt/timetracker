@@ -181,6 +181,27 @@
 
     </div>
 
+    <!-- Inline Edit Modal (Hidden, positioned dynamically via JS) -->
+    <div id="inline-edit-modal" class="absolute hidden bg-white border shadow-lg rounded p-3 z-40 text-sm w-48">
+        <div class="mb-2 font-medium text-gray-800" id="inline-edit-title">Update Status</div>
+        <div class="flex items-center gap-4 mb-3">
+            <label class="inline-flex items-center">
+                <input type="radio" name="inline-edit-value" value="1" class="form-radio text-blue-600">
+                <span class="ml-2">Yes</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" name="inline-edit-value" value="0" class="form-radio text-blue-600">
+                <span class="ml-2">No</span>
+            </label>
+        </div>
+        <div class="flex justify-between mt-2">
+            <button id="btn-inline-cancel" type="button"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 px-3 rounded text-xs">Cancel</button>
+            <button id="btn-inline-save" type="button"
+                class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded text-xs">Save</button>
+        </div>
+    </div>
+
     <!-- Add Entry Modal -->
     <div id="add-entry-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden"
         style="z-index: 50;">

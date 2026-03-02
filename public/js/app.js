@@ -23,6 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEntryForm = document.getElementById('add-entry-form');
     const modalReportingDate = document.getElementById('modal-reporting-date');
 
+    // Inline Edit Elements
+    const inlineEditModal = document.getElementById('inline-edit-modal');
+    const btnInlineCancel = document.getElementById('btn-inline-cancel');
+    const btnInlineSave = document.getElementById('btn-inline-save');
+    const inlineEditTitle = document.getElementById('inline-edit-title');
+    let inlineEditState = { id: null, field: null, triggerBtn: null };
+
     // Init
     typeSelector.value = currentType;
     datePicker.value = currentDate;
@@ -43,13 +50,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Close modal on outside click
+    // Close modals on outside click
     window.addEventListener('click', (e) => {
         if (e.target === addEntryModal) {
             addEntryModal.classList.add('hidden');
             addEntryForm.reset();
         }
+
+        // If clicking outside inline modal AND not clicking a trigger button, close it
+        if (inlineEditModal && !inlineEditModal.classList.contains('hidden') && !inlineEditModal.contains(e.target)) {
+            // Check if what we clicked is one of our trigger buttons
+            const isTrigger = e.target.closest('.inline-edit-trigger');
+            if (!isTrigger) {
+                closeInlineModal();
+            }
+        }
     });
+
+    // Inline Edit Logic
+    function closeInlineModal() {
+        inlineEditModal.classList.add('hidden');
+        inlineEditState = { id: null, field: null, triggerBtn: null };
+    }
+
+    if (btnInlineCancel) {
+        btnInlineCancel.addEventListener('click', closeInlineModal);
+    }
+
+    if (btnInlineSave) {
+        btnInlineSave.addEventListener('click', async () => {
+            const selectedRadio = document.querySelector('input[name="inline-edit-value"]:checked');
+            if (!selectedRadio || !inlineEditState.id) return;
+
+            const value = selectedRadio.value;
+            const payload = {
+                id: inlineEditState.id,
+                field: inlineEditState.field,
+                value: value
+            };
+
+            const originalText = inlineEditState.triggerBtn.innerText;
+            inlineEditState.triggerBtn.innerText = '...'; // loading state
+
+            try {
+                const res = await fetch('api/update_transfer_status.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    closeInlineModal();
+                    fetchData(currentDate); // Refresh completely to recalculate downstream tables
+                } else {
+                    inlineEditState.triggerBtn.innerText = originalText;
+                    alert('Error updating status: ' + (data.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                inlineEditState.triggerBtn.innerText = originalText;
+                alert('Connection error while saving.');
+            }
+        });
+    }
 
     if (addEntryForm) {
         addEntryForm.addEventListener('submit', async (e) => {
@@ -182,8 +246,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const startTitle = gapPrev ? `Previous ended before/after start (${gapPrev})` : '';
             const endTitle = gapNext ? `Next starts after/before end (${gapNext})` : '';
 
-            const intStatus = row.transfered_intern == 1 ? 'Yes' : 'No';
-            const jiraStatus = row.transfered_jira == 1 ? 'Yes' : 'No';
+            // Using buttons instead of text
+            const intStatusText = row.transfered_intern == 1 ? 'Yes' : 'No';
+            const jiraStatusText = row.transfered_jira == 1 ? 'Yes' : 'No';
+
+            // Note: We only allow inline edit if the row exists in DB (has id)
+            const btnInt = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfered_intern" data-val="${row.transfered_intern}">${intStatusText}</button>`;
+            const btnJira = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfered_jira" data-val="${row.transfered_jira}">${jiraStatusText}</button>`;
 
             tr.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono ${startClass}" title="${startTitle}">
@@ -202,13 +271,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${duration}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                    ${intStatus}
+                    ${btnInt}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                    ${jiraStatus}
+                    ${btnJira}
                 </td>
             `;
             tbody.appendChild(tr);
+        });
+
+        // Attach click events to the new buttons
+        document.querySelectorAll('.inline-edit-trigger').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const id = btn.getAttribute('data-id');
+                const field = btn.getAttribute('data-field');
+                const val = btn.getAttribute('data-val');
+
+                inlineEditState = { id, field, triggerBtn: btn };
+
+                const fieldName = field === 'transfered_intern' ? 'Internal' : 'Jira';
+                inlineEditTitle.innerText = `Transfer to ${fieldName}?`;
+
+                // Set radio
+                const radio = document.querySelector(`input[name="inline-edit-value"][value="${val}"]`);
+                if (radio) radio.checked = true;
+
+                // Position Modal
+                const rect = btn.getBoundingClientRect();
+                inlineEditModal.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+
+                // Prevent modal from going off-screen on the right
+                let leftPos = rect.left + window.scrollX - 50;
+                if (leftPos + 200 > window.innerWidth) { // 200 is approx modal width
+                    leftPos = window.innerWidth - 210;
+                }
+                inlineEditModal.style.left = leftPos + 'px';
+
+                inlineEditModal.classList.remove('hidden');
+            });
         });
     }
 
