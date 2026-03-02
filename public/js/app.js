@@ -22,8 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEntryModal = document.getElementById('add-entry-modal');
     const addEntryForm = document.getElementById('add-entry-form');
     const modalReportingDate = document.getElementById('modal-reporting-date');
+    const addModalTitle = document.getElementById('add-modal-title');
 
     // Hidden Fields
+    const modalId = document.getElementById('modal-id');
     const modalStartReported = document.getElementById('modal-start-reported');
     const modalEndReported = document.getElementById('modal-end-reported');
     const modalTaskName = document.getElementById('modal-task-name');
@@ -39,6 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const inlineEditTitle = document.getElementById('inline-edit-title');
     let inlineEditState = { id: null, field: null, triggerBtn: null };
 
+    // Delete Modal Elements
+    const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+    const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+    const btnCancelDelete = document.getElementById('btn-cancel-delete');
+    let deleteTargetId = null;
+
     // Init
     typeSelector.value = currentType;
     datePicker.value = currentDate;
@@ -49,7 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnOpenModal.addEventListener('click', () => {
             addEntryForm.reset(); // Reset form first
 
+            addModalTitle.innerText = 'Add New Entry';
+
             // Clear hidden fields manually for safety
+            modalId.value = '';
             modalStartReported.value = '';
             modalEndReported.value = '';
             modalTaskName.value = '';
@@ -75,6 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === addEntryModal) {
             addEntryModal.classList.add('hidden');
             addEntryForm.reset();
+        }
+
+        if (e.target === deleteConfirmModal) {
+            deleteConfirmModal.classList.add('hidden');
+            deleteTargetId = null;
         }
 
         // If clicking outside inline modal AND not clicking a trigger button, close it
@@ -135,6 +151,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Delete Confirmation Logic
+    if (btnCancelDelete) {
+        btnCancelDelete.addEventListener('click', () => {
+            deleteConfirmModal.classList.add('hidden');
+            deleteTargetId = null;
+        });
+    }
+
+    if (btnConfirmDelete) {
+        btnConfirmDelete.addEventListener('click', async () => {
+            if (!deleteTargetId) return;
+
+            try {
+                const res = await fetch('api/delete_entry.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: deleteTargetId })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    deleteConfirmModal.classList.add('hidden');
+                    deleteTargetId = null;
+                    fetchData(currentDate); // Refresh completely
+                } else {
+                    alert('Error deleting entry: ' + (data.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error while deleting.');
+            }
+        });
+    }
+
     if (addEntryForm) {
         addEntryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -147,6 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: document.getElementById('modal-description').value
             };
 
+            // Edit vs Add check
+            const isEdit = modalId.value !== '';
+            if (isEdit) {
+                payload.id = modalId.value;
+            }
+
             // Add hidden fields if they are set (from Copy action)
             if (modalStartReported.value !== '') payload.start_time_reported = modalStartReported.value;
             if (modalEndReported.value !== '') payload.end_time_reported = modalEndReported.value;
@@ -156,8 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (modalTransferIntern.value !== '') payload.transfered_intern = modalTransferIntern.value;
             if (modalTransferJira.value !== '') payload.transfered_jira = modalTransferJira.value;
 
+            const endpoint = isEdit ? 'api/update_entry.php' : 'api/add_entry.php';
+
             try {
-                const res = await fetch('api/add_entry.php', {
+                const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -310,10 +368,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center">
                     ${btnJira}
                 </td>
-                <td class="w-px whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-center text-sm font-medium space-x-2">
+                    <button class="btn-edit text-blue-600 hover:text-blue-900 transition-colors" data-index="${index}" title="Edit Entry">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                    </button>
                     <button class="btn-copy text-indigo-600 hover:text-indigo-900 transition-colors" data-index="${index}" title="Copy Entry">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                    <button class="btn-delete text-red-600 hover:text-red-900 transition-colors" data-id="${row.id}" title="Delete Entry">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
                 </td>
@@ -326,11 +394,13 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 addEntryForm.reset();
+                addModalTitle.innerText = 'Add New Entry (Copy)';
 
                 const index = parseInt(btn.getAttribute('data-index'), 10);
                 const row = currentData.raw[index];
 
                 // Visible fields
+                modalId.value = ''; // Ensure ID is clear for copy
                 modalReportingDate.value = today; // Forced to today
                 document.getElementById('modal-start-time').value = row.start_time;
                 document.getElementById('modal-end-time').value = row.end_time;
@@ -352,7 +422,51 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Attach click events to the new buttons
+        // Attach click events to Edit buttons
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                addEntryForm.reset();
+                addModalTitle.innerText = 'Edit Entry';
+
+                const index = parseInt(btn.getAttribute('data-index'), 10);
+                const row = currentData.raw[index];
+
+                // Make sure we have an ID to edit
+                modalId.value = row.id;
+
+                // Visible fields
+                modalReportingDate.value = row.reporting_date; // Keep original date!
+                document.getElementById('modal-start-time').value = row.start_time || '';
+                document.getElementById('modal-end-time').value = row.end_time || '';
+                document.getElementById('modal-task-id').value = row.task_id || '';
+                document.getElementById('modal-description').value = row.description || '';
+
+                // Hidden fields
+                modalStartReported.value = row.start_time_reported || '';
+                modalEndReported.value = row.end_time_reported || '';
+                modalTaskName.value = row.task_name || '';
+                modalDescriptionLong.value = row.description_long || '';
+
+                // Original transfer status
+                modalTransfer.value = row.transfer !== undefined && row.transfer !== null ? row.transfer : '';
+                modalTransferIntern.value = row.transfered_intern !== undefined && row.transfered_intern !== null ? row.transfered_intern : '';
+                modalTransferJira.value = row.transfered_jira !== undefined && row.transfered_jira !== null ? row.transfered_jira : '';
+
+                addEntryModal.classList.remove('hidden');
+            });
+        });
+
+        // Attach click events to Delete buttons
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                deleteTargetId = btn.getAttribute('data-id');
+                deleteConfirmModal.classList.remove('hidden');
+            });
+        });
+
+        // Attach click events to the new inline buttons
         document.querySelectorAll('.inline-edit-trigger').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
