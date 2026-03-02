@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalDescriptionLong.value = row.description_long || '';
 
                 // Forced overrides for transfer status
-                modalTransfer.value = '0';
+                modalTransfer.value = row.transfer !== undefined && row.transfer !== null ? row.transfer : '1';
                 modalTransferIntern.value = '0';
                 modalTransferJira.value = '0';
 
