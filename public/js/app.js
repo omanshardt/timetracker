@@ -275,43 +275,47 @@ document.addEventListener('DOMContentLoaded', () => {
             const startTitle = gapPrev ? `Previous ended before/after start (${gapPrev})` : '';
             const endTitle = gapNext ? `Next starts after/before end (${gapNext})` : '';
 
-            // Using buttons instead of text
-            const transStatusText = row.transfer == 1 ? 'Yes' : 'No';
-            const intStatusText = row.transfered_intern == 1 ? 'Yes' : 'No';
-            const jiraStatusText = row.transfered_jira == 1 ? 'Yes' : 'No';
+            // Using icons instead of text
+            const transStatusText = row.transfer == 1 ? '✅' : '❌';
+            const intStatusText = row.transfered_intern == 1 ? '✅' : '❌';
+            const jiraStatusText = row.transfered_jira == 1 ? '✅' : '❌';
 
             // Note: We only allow inline edit if the row exists in DB (has id)
-            const btnTrans = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfer" data-val="${row.transfer}">${transStatusText}</button>`;
-            const btnInt = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfered_intern" data-val="${row.transfered_intern}">${intStatusText}</button>`;
-            const btnJira = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfered_jira" data-val="${row.transfered_jira}">${jiraStatusText}</button>`;
+            const btnTrans = `<button class="inline-edit-trigger text-lg hover:scale-110 transition-transform" data-id="${row.id}" data-field="transfer" data-val="${row.transfer}">${transStatusText}</button>`;
+            const btnInt = `<button class="inline-edit-trigger text-lg hover:scale-110 transition-transform" data-id="${row.id}" data-field="transfered_intern" data-val="${row.transfered_intern}">${intStatusText}</button>`;
+            const btnJira = `<button class="inline-edit-trigger text-lg hover:scale-110 transition-transform" data-id="${row.id}" data-field="transfered_jira" data-val="${row.transfered_jira}">${jiraStatusText}</button>`;
 
             tr.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono ${startClass}" title="${startTitle}">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono ${startClass}" title="${startTitle}">
                     ${start ? start.substring(0, 5) : '-'}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono ${endClass}" title="${endTitle}">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono ${endClass}" title="${endTitle}">
                     ${end ? end.substring(0, 5) : '-'}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">
                     ${row.task_id || ''}
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-500">
+                <td class="w-full px-6 py-4 text-sm text-gray-500 break-words">
                     ${row.description || ''}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono">
                     ${duration}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center">
                     ${btnTrans}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center">
                     ${btnInt}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center">
                     ${btnJira}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    <button class="btn-copy text-indigo-600 hover:text-indigo-900" data-index="${index}">Copy</button>
+                <td class="w-px whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
+                    <button class="btn-copy text-indigo-600 hover:text-indigo-900 transition-colors" data-index="${index}" title="Copy Entry">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -423,39 +427,43 @@ document.addEventListener('DOMContentLoaded', () => {
             duration = row.duration_tracking_formatted;
         }
 
-        const intClass = getStatusColor(row.status_intern);
-        const jiraClass = getStatusColor(row.status_jira);
+        let iconInt = row.status_intern === 'Yes' ? '✅' : '❌';
+        let iconJira = row.status_jira === 'Yes' ? '✅' : '❌';
+
+        // Handling aggregation badges if not cleanly Yes/No
+        if (row.status_intern === 'Some') iconInt = '🟡';
+        if (row.status_jira === 'Some') iconJira = '🟡';
 
         let html = '';
 
         if (!isGrouped) {
             html += `
-             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+             <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono">
                 ${start ? start.substring(0, 5) : '-'}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+            <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono">
                 ${end ? end.substring(0, 5) : '-'}
             </td>`;
         }
 
         html += `
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium font-mono">
+            <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium font-mono">
                 ${row.task_id}
             </td>
-            <td class="px-6 py-4 text-sm text-gray-500">
+            <td class="w-full px-6 py-4 text-sm text-gray-500 break-words">
                 ${row.description}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+            <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono">
                 ${duration}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-center">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${intClass}">
-                    ${row.status_intern}
+            <td class="w-px whitespace-nowrap px-6 py-4 text-center">
+                <span class="text-lg" title="${row.status_intern}">
+                    ${iconInt}
                 </span>
             </td>
-             <td class="px-6 py-4 whitespace-nowrap text-center">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${jiraClass}">
-                    ${row.status_jira}
+             <td class="w-px whitespace-nowrap px-6 py-4 text-center">
+                <span class="text-lg" title="${row.status_jira}">
+                    ${iconJira}
                 </span>
             </td>
         `;
