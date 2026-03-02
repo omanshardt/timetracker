@@ -427,12 +427,12 @@ document.addEventListener('DOMContentLoaded', () => {
             duration = row.duration_tracking_formatted;
         }
 
-        let iconInt = row.status_intern === 'Yes' ? '✅' : '❌';
-        let iconJira = row.status_jira === 'Yes' ? '✅' : '❌';
+        let iconInt = row.status_intern === 'green' ? '✅' : '❌';
+        let iconJira = row.status_jira === 'green' ? '✅' : '❌';
 
         // Handling aggregation badges if not cleanly Yes/No
-        if (row.status_intern === 'Some') iconInt = '🟡';
-        if (row.status_jira === 'Some') iconJira = '🟡';
+        if (row.status_intern === 'yellow') iconInt = '🟡';
+        if (row.status_jira === 'yellow') iconJira = '🟡';
 
         let html = '';
 
