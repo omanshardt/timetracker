@@ -31,7 +31,7 @@ $field = $input['field'];
 $value = (int) $input['value'];
 
 // Validate field name to prevent SQL injection
-if (!in_array($field, ['transfered_intern', 'transfered_jira'])) {
+if (!in_array($field, ['transfer', 'transfered_intern', 'transfered_jira'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid field']);
     exit;

@@ -276,10 +276,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const endTitle = gapNext ? `Next starts after/before end (${gapNext})` : '';
 
             // Using buttons instead of text
+            const transStatusText = row.transfer == 1 ? 'Yes' : 'No';
             const intStatusText = row.transfered_intern == 1 ? 'Yes' : 'No';
             const jiraStatusText = row.transfered_jira == 1 ? 'Yes' : 'No';
 
             // Note: We only allow inline edit if the row exists in DB (has id)
+            const btnTrans = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfer" data-val="${row.transfer}">${transStatusText}</button>`;
             const btnInt = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfered_intern" data-val="${row.transfered_intern}">${intStatusText}</button>`;
             const btnJira = `<button class="inline-edit-trigger text-blue-600 hover:text-blue-800 underline" data-id="${row.id}" data-field="transfered_jira" data-val="${row.transfered_jira}">${jiraStatusText}</button>`;
 
@@ -298,6 +300,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
                     ${duration}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    ${btnTrans}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                     ${btnInt}
@@ -354,7 +359,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 inlineEditState = { id, field, triggerBtn: btn };
 
-                const fieldName = field === 'transfered_intern' ? 'Internal' : 'Jira';
+                let fieldName = 'Transfer';
+                if (field === 'transfered_intern') fieldName = 'Internal';
+                if (field === 'transfered_jira') fieldName = 'Jira';
+
                 inlineEditTitle.innerText = `Transfer to ${fieldName}?`;
 
                 // Set radio
