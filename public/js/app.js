@@ -8,21 +8,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableFooterSumEl = document.getElementById('table-detailed-footer-sum');
 
     // State
+    const storedType = localStorage.getItem('timetracker_type');
+    const storedDate = localStorage.getItem('timetracker_date');
+    const today = new Date().toISOString().split('T')[0];
+
     let currentData = null;
-    let currentType = 'real'; // 'real' or 'tracking'
+    let currentType = storedType || 'real'; // 'real' or 'tracking'
+    let currentDate = storedDate || today;
 
     // Init
-    const today = new Date().toISOString().split('T')[0];
-    datePicker.value = today;
-    fetchData(today);
+    typeSelector.value = currentType;
+    datePicker.value = currentDate;
+    fetchData(currentDate);
 
     // Events
     datePicker.addEventListener('change', (e) => {
-        fetchData(e.target.value);
+        currentDate = e.target.value;
+        localStorage.setItem('timetracker_date', currentDate);
+        fetchData(currentDate);
     });
 
     typeSelector.addEventListener('change', (e) => {
         currentType = e.target.value;
+        localStorage.setItem('timetracker_type', currentType);
         renderAll();
     });
 
