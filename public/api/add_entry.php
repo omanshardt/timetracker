@@ -32,9 +32,14 @@ $end_time = $input['end_time'];
 $task_id = $input['task_id'];
 $description = $input['description'] ?? '';
 
-// Default tracking time to real time if not specified (Prompt assumes same form for simplicity right now)
+// These might come from a "Copy" action (hidden fields)
 $start_time_reported = $input['start_time_reported'] ?? $start_time;
 $end_time_reported = $input['end_time_reported'] ?? $end_time;
+$task_name = $input['task_name'] ?? null;
+$description_long = $input['description_long'] ?? null;
+$transfer = isset($input['transfer']) ? (int) $input['transfer'] : 1;
+$transfered_intern = isset($input['transfered_intern']) ? (int) $input['transfered_intern'] : 0;
+$transfered_jira = isset($input['transfered_jira']) ? (int) $input['transfered_jira'] : 0;
 
 try {
     $stmt = $pdo->prepare("
@@ -45,7 +50,12 @@ try {
             start_time_reported, 
             end_time_reported, 
             task_id, 
-            description
+            task_name,
+            description,
+            description_long,
+            transfer,
+            transfered_intern,
+            transfered_jira
         ) VALUES (
             :reporting_date, 
             :start_time, 
@@ -53,10 +63,15 @@ try {
             :start_time_reported, 
             :end_time_reported, 
             :task_id, 
-            :description
+            :task_name,
+            :description,
+            :description_long,
+            :transfer,
+            :transfered_intern,
+            :transfered_jira
         )
     ");
-    
+
     $stmt->execute([
         'reporting_date' => $reporting_date,
         'start_time' => $start_time,
@@ -64,7 +79,12 @@ try {
         'start_time_reported' => $start_time_reported,
         'end_time_reported' => $end_time_reported,
         'task_id' => $task_id,
-        'description' => $description
+        'task_name' => $task_name,
+        'description' => $description,
+        'description_long' => $description_long,
+        'transfer' => $transfer,
+        'transfered_intern' => $transfered_intern,
+        'transfered_jira' => $transfered_jira
     ]);
 
     echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);

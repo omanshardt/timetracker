@@ -23,6 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEntryForm = document.getElementById('add-entry-form');
     const modalReportingDate = document.getElementById('modal-reporting-date');
 
+    // Hidden Fields
+    const modalStartReported = document.getElementById('modal-start-reported');
+    const modalEndReported = document.getElementById('modal-end-reported');
+    const modalTaskName = document.getElementById('modal-task-name');
+    const modalDescriptionLong = document.getElementById('modal-description-long');
+    const modalTransfer = document.getElementById('modal-transfer');
+    const modalTransferIntern = document.getElementById('modal-transfer-intern');
+    const modalTransferJira = document.getElementById('modal-transfer-jira');
+
     // Inline Edit Elements
     const inlineEditModal = document.getElementById('inline-edit-modal');
     const btnInlineCancel = document.getElementById('btn-inline-cancel');
@@ -38,6 +47,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal Events
     if (btnOpenModal) {
         btnOpenModal.addEventListener('click', () => {
+            addEntryForm.reset(); // Reset form first
+
+            // Clear hidden fields manually for safety
+            modalStartReported.value = '';
+            modalEndReported.value = '';
+            modalTaskName.value = '';
+            modalDescriptionLong.value = '';
+            modalTransfer.value = '';
+            modalTransferIntern.value = '';
+            modalTransferJira.value = '';
+
             modalReportingDate.value = today; // Prefill today's date
             addEntryModal.classList.remove('hidden');
         });
@@ -127,6 +147,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: document.getElementById('modal-description').value
             };
 
+            // Add hidden fields if they are set (from Copy action)
+            if (modalStartReported.value !== '') payload.start_time_reported = modalStartReported.value;
+            if (modalEndReported.value !== '') payload.end_time_reported = modalEndReported.value;
+            if (modalTaskName.value !== '') payload.task_name = modalTaskName.value;
+            if (modalDescriptionLong.value !== '') payload.description_long = modalDescriptionLong.value;
+            if (modalTransfer.value !== '') payload.transfer = modalTransfer.value;
+            if (modalTransferIntern.value !== '') payload.transfered_intern = modalTransferIntern.value;
+            if (modalTransferJira.value !== '') payload.transfered_jira = modalTransferJira.value;
+
             try {
                 const res = await fetch('api/add_entry.php', {
                     method: 'POST',
@@ -211,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tbody = document.getElementById('table-detailed-body');
         tbody.innerHTML = '';
 
-        currentData.raw.forEach(row => {
+        currentData.raw.forEach((row, index) => {
             const tr = document.createElement('tr');
 
             const isTransfer0 = (row.transfer == 0);
@@ -276,8 +305,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                     ${btnJira}
                 </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                    <button class="btn-copy text-indigo-600 hover:text-indigo-900" data-index="${index}">Copy</button>
+                </td>
             `;
             tbody.appendChild(tr);
+        });
+
+        // Attach click events to Copy buttons
+        document.querySelectorAll('.btn-copy').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                addEntryForm.reset();
+
+                const index = parseInt(btn.getAttribute('data-index'), 10);
+                const row = currentData.raw[index];
+
+                // Visible fields
+                modalReportingDate.value = today; // Forced to today
+                document.getElementById('modal-start-time').value = row.start_time;
+                document.getElementById('modal-end-time').value = row.end_time;
+                document.getElementById('modal-task-id').value = row.task_id || '';
+                document.getElementById('modal-description').value = row.description || '';
+
+                // Hidden fields
+                modalStartReported.value = row.start_time_reported || '';
+                modalEndReported.value = row.end_time_reported || '';
+                modalTaskName.value = row.task_name || '';
+                modalDescriptionLong.value = row.description_long || '';
+
+                // Forced overrides for transfer status
+                modalTransfer.value = '0';
+                modalTransferIntern.value = '0';
+                modalTransferJira.value = '0';
+
+                addEntryModal.classList.remove('hidden');
+            });
         });
 
         // Attach click events to the new buttons

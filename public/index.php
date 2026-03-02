@@ -99,6 +99,9 @@
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Jira</th>
+                            <th scope="col" class="relative px-6 py-3">
+                                <span class="sr-only">Actions</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="table-detailed-body" class="bg-white divide-y divide-gray-200">
@@ -110,7 +113,7 @@
                                 no Pause):</td>
                             <td class="px-6 py-3 text-left font-bold text-gray-900" id="table-detailed-footer-sum">--:--
                             </td>
-                            <td colspan="2"></td>
+                            <td colspan="3"></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -210,6 +213,14 @@
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Add New Entry</h3>
                 <div class="mt-2 px-7 py-3 text-left">
                     <form id="add-entry-form">
+                        <input type="hidden" id="modal-start-reported">
+                        <input type="hidden" id="modal-end-reported">
+                        <input type="hidden" id="modal-task-name">
+                        <input type="hidden" id="modal-description-long">
+                        <input type="hidden" id="modal-transfer">
+                        <input type="hidden" id="modal-transfer-intern">
+                        <input type="hidden" id="modal-transfer-jira">
+
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2"
                                 for="modal-reporting-date">Reporting Date</label>
