@@ -16,10 +16,75 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentType = storedType || 'real'; // 'real' or 'tracking'
     let currentDate = storedDate || today;
 
+    // Modal Elements
+    const btnOpenModal = document.getElementById('btn-open-add-modal');
+    const btnCancelModal = document.getElementById('btn-cancel-modal');
+    const addEntryModal = document.getElementById('add-entry-modal');
+    const addEntryForm = document.getElementById('add-entry-form');
+    const modalReportingDate = document.getElementById('modal-reporting-date');
+
     // Init
     typeSelector.value = currentType;
     datePicker.value = currentDate;
     fetchData(currentDate);
+
+    // Modal Events
+    if (btnOpenModal) {
+        btnOpenModal.addEventListener('click', () => {
+            modalReportingDate.value = today; // Prefill today's date
+            addEntryModal.classList.remove('hidden');
+        });
+    }
+
+    if (btnCancelModal) {
+        btnCancelModal.addEventListener('click', () => {
+            addEntryModal.classList.add('hidden');
+            addEntryForm.reset();
+        });
+    }
+
+    // Close modal on outside click
+    window.addEventListener('click', (e) => {
+        if (e.target === addEntryModal) {
+            addEntryModal.classList.add('hidden');
+            addEntryForm.reset();
+        }
+    });
+
+    if (addEntryForm) {
+        addEntryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const payload = {
+                reporting_date: document.getElementById('modal-reporting-date').value,
+                start_time: document.getElementById('modal-start-time').value,
+                end_time: document.getElementById('modal-end-time').value,
+                task_id: document.getElementById('modal-task-id').value,
+                description: document.getElementById('modal-description').value
+            };
+
+            try {
+                const res = await fetch('api/add_entry.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    addEntryModal.classList.add('hidden');
+                    addEntryForm.reset();
+                    fetchData(currentDate); // Refresh data
+                } else {
+                    alert('Error saving entry: ' + (data.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error while saving entry.');
+            }
+        });
+    }
 
     // Events
     datePicker.addEventListener('change', (e) => {

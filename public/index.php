@@ -30,6 +30,14 @@
             </div>
 
             <div class="flex items-center gap-4">
+                <!-- Add Entry Button -->
+                <div>
+                    <button id="btn-open-add-modal"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow mt-6">
+                        + Add Entry
+                    </button>
+                </div>
+
                 <!-- Date Picker -->
                 <div>
                     <label for="date-picker" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
@@ -171,6 +179,67 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Add Entry Modal -->
+    <div id="add-entry-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden"
+        style="z-index: 50;">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Add New Entry</h3>
+                <div class="mt-2 px-7 py-3 text-left">
+                    <form id="add-entry-form">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2"
+                                for="modal-reporting-date">Reporting Date</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="modal-reporting-date" type="date" required>
+                        </div>
+                        <div class="mb-4 flex gap-4">
+                            <div class="w-1/2">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="modal-start-time">Start
+                                    Time</label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="modal-start-time" type="time" required>
+                            </div>
+                            <div class="w-1/2">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="modal-end-time">End
+                                    Time</label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="modal-end-time" type="time" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="modal-task-id">Task
+                                ID</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="modal-task-id" type="text" placeholder="e.g. PROJ-123" required>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2"
+                                for="modal-description">Description</label>
+                            <textarea
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="modal-description" rows="3" placeholder="Optional notes..."></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button id="btn-cancel-modal" type="button"
+                                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Entry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/app.js"></script>
