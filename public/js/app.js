@@ -10,11 +10,41 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     const storedType = localStorage.getItem('timetracker_type');
     const storedDate = localStorage.getItem('timetracker_date');
+    const storedTheme = localStorage.getItem('timetracker_theme') || 'light';
     const today = new Date().toISOString().split('T')[0];
 
     let currentData = null;
     let currentType = storedType || 'real'; // 'real' or 'tracking'
     let currentDate = storedDate || today;
+    let currentTheme = storedTheme;
+
+    // Theme Toggle Logic
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        if (theme === 'dark') {
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        } else {
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+        localStorage.setItem('timetracker_theme', theme);
+        currentTheme = theme;
+    }
+
+    // Initialize theme
+    applyTheme(currentTheme);
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(nextTheme);
+        });
+    }
 
     // Modal Elements
     const btnOpenModal = document.getElementById('btn-open-add-modal');
@@ -294,6 +324,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'bg-red-100 text-red-800';
     }
 
+    function getStatusBadge(val, field) {
+        const isYes = val == 1;
+        const text = isYes ? 'Yes' : 'No';
+        const colorClass = isYes ? 'badge-success' : 'badge-error';
+        const fieldName = field === 'transfer' ? 'Transfer' : (field === 'transfered_intern' ? 'Int' : 'Jira');
+        
+        return `<button class="inline-edit-trigger badge ${colorClass} hover:opacity-80 transition-opacity" 
+                        data-id="${inlineEditState.id}" data-field="${field}" data-val="${val}" 
+                        aria-label="Change ${fieldName} status (currently ${text})">
+                    ${text}
+                </button>`;
+    }
+
     function renderDetailed() {
         const tbody = document.getElementById('table-detailed-body');
         tbody.innerHTML = '';
@@ -327,30 +370,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Cell Styles for Gap/Overlap
-            const startClass = gapPrev ? 'bg-red-100 text-red-900' : '';
-            const endClass = gapNext ? 'bg-red-100 text-red-900' : '';
+            const startClass = gapPrev ? 'bg-red-100 text-red-900 rounded px-1' : '';
+            const endClass = gapNext ? 'bg-red-100 text-red-900 rounded px-1' : '';
 
             const startTitle = gapPrev ? `Previous ended before/after start (${gapPrev})` : '';
             const endTitle = gapNext ? `Next starts after/before end (${gapNext})` : '';
 
-            // Using icons instead of text
-            const transStatusText = row.transfer == 1 ? '✅' : '❌';
-            const intStatusText = row.transfered_intern == 1 ? '✅' : '❌';
-            const jiraStatusText = row.transfered_jira == 1 ? '✅' : '❌';
-
-            // Note: We only allow inline edit if the row exists in DB (has id)
-            const btnTrans = `<button class="inline-edit-trigger text-lg hover:scale-110 transition-transform" data-id="${row.id}" data-field="transfer" data-val="${row.transfer}">${transStatusText}</button>`;
-            const btnInt = `<button class="inline-edit-trigger text-lg hover:scale-110 transition-transform" data-id="${row.id}" data-field="transfered_intern" data-val="${row.transfered_intern}">${intStatusText}</button>`;
-            const btnJira = `<button class="inline-edit-trigger text-lg hover:scale-110 transition-transform" data-id="${row.id}" data-field="transfered_jira" data-val="${row.transfered_jira}">${jiraStatusText}</button>`;
+            // Using badges instead of emojis
+            const btnTrans = `<button class="inline-edit-trigger badge ${row.transfer == 1 ? 'badge-success' : 'badge-error'} hover:opacity-80 transition-opacity" 
+                                data-id="${row.id}" data-field="transfer" data-val="${row.transfer}" aria-label="Toggle Transfer status">
+                                ${row.transfer == 1 ? 'Yes' : 'No'}
+                              </button>`;
+            const btnInt = `<button class="inline-edit-trigger badge ${row.transfered_intern == 1 ? 'badge-success' : 'badge-error'} hover:opacity-80 transition-opacity" 
+                                data-id="${row.id}" data-field="transfered_intern" data-val="${row.transfered_intern}" aria-label="Toggle Internal status">
+                                ${row.transfered_intern == 1 ? 'Yes' : 'No'}
+                              </button>`;
+            const btnJira = `<button class="inline-edit-trigger badge ${row.transfered_jira == 1 ? 'badge-success' : 'badge-error'} hover:opacity-80 transition-opacity" 
+                                data-id="${row.id}" data-field="transfered_jira" data-val="${row.transfered_jira}" aria-label="Toggle Jira status">
+                                ${row.transfered_jira == 1 ? 'Yes' : 'No'}
+                              </button>`;
 
             tr.innerHTML = `
-                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono ${startClass}" title="${startTitle}">
-                    ${start ? start.substring(0, 5) : '-'}
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono" title="${startTitle}">
+                    <span class="${startClass}">${start ? start.substring(0, 5) : '-'}</span>
                 </td>
-                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono ${endClass}" title="${endTitle}">
-                    ${end ? end.substring(0, 5) : '-'}
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono" title="${endTitle}">
+                    <span class="${endClass}">${end ? end.substring(0, 5) : '-'}</span>
                 </td>
-                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium font-mono">
                     ${row.task_id || ''}
                 </td>
                 <td class="w-full px-6 py-4 text-sm text-gray-500 break-words">
@@ -369,17 +416,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${btnJira}
                 </td>
                 <td class="w-px whitespace-nowrap px-6 py-4 text-center text-sm font-medium space-x-2">
-                    <button class="btn-edit text-blue-600 hover:text-blue-900 transition-colors" data-index="${index}" title="Edit Entry">
+                    <button class="btn-edit text-blue-600 hover:text-blue-900 transition-colors p-1" data-index="${index}" aria-label="Edit Entry" title="Edit Entry">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                     </button>
-                    <button class="btn-copy text-indigo-600 hover:text-indigo-900 transition-colors" data-index="${index}" title="Copy Entry">
+                    <button class="btn-copy text-indigo-600 hover:text-indigo-900 transition-colors p-1" data-index="${index}" aria-label="Copy Entry" title="Copy Entry">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                     </button>
-                    <button class="btn-delete text-red-600 hover:text-red-900 transition-colors" data-id="${row.id}" title="Delete Entry">
+                    <button class="btn-delete text-red-600 hover:text-red-900 transition-colors p-1" data-id="${row.id}" aria-label="Delete Entry" title="Delete Entry">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
@@ -541,12 +588,14 @@ document.addEventListener('DOMContentLoaded', () => {
             duration = row.duration_tracking_formatted;
         }
 
-        let iconInt = row.status_intern === 'green' ? '✅' : '❌';
-        let iconJira = row.status_jira === 'green' ? '✅' : '❌';
+        const getBadge = (status) => {
+            if (status === 'green') return '<span class="badge badge-success">Yes</span>';
+            if (status === 'yellow') return '<span class="badge badge-warning">Partial</span>';
+            return '<span class="badge badge-error">No</span>';
+        };
 
-        // Handling aggregation badges if not cleanly Yes/No
-        if (row.status_intern === 'yellow') iconInt = '🟡';
-        if (row.status_jira === 'yellow') iconJira = '🟡';
+        const iconInt = getBadge(row.status_intern);
+        const iconJira = getBadge(row.status_jira);
 
         let html = '';
 
@@ -571,14 +620,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${duration}
             </td>
             <td class="w-px whitespace-nowrap px-6 py-4 text-center">
-                <span class="text-lg" title="${row.status_intern}">
-                    ${iconInt}
-                </span>
+                ${iconInt}
             </td>
              <td class="w-px whitespace-nowrap px-6 py-4 text-center">
-                <span class="text-lg" title="${row.status_jira}">
-                    ${iconJira}
-                </span>
+                ${iconJira}
             </td>
         `;
 
