@@ -5,29 +5,23 @@ A personal time tracking tool with a PHP backend and Tailwind CSS frontend.
 ## Setup
 
 1.  **Database**:
-    -   Ensure the MySQL database `d021a4e0` exists.
-    -   Import the schema if not already present (provided in the prompt).
-    -   Verify credentials in `config/db.php`.
+    -   Create a new MySQL database for the application.
+    -   Import the schema (provided in the SQL dump).
+    -   Copy `config/db.example.php` to `config/db.php`.
+    -   Update credentials in `config/db.php` to match your new database.
 
 2.  **Deployment**:
-    -   Upload `public/` and `src/`/`config/` to your server.
+    -   Upload the project files to your server.
     -   Point your web server document root to the `public/` directory.
 
-3.  **Basic Authentication**:
-    The project is configured to use standard Basic Auth via `.htaccess`.
-    
-    1.  Create a `.htpasswd` file outside your web root (e.g. `/var/www/.htpasswd`).
-    2.  Generate the password hash. You can use an online generator or the command line:
-        ```bash
-        htpasswd -c /path/to/.htpasswd d021a4e0
-        ```
-    3.  Edit `public/.htaccess` (created below) and update the `AuthUserFile` path to match your server's absolute path to the `.htpasswd` file.
-
+3.  **Security**:
+    -   **Important**: This project does not currently include built-in authentication routing. It is highly recommended that you implement standard Basic Authentication (or another authentication method) at the web server level before deploying to a production environment.
 ## Features
 -   **Detailed View**: Raw entries with Gap/Overlap detection (Red background).
 -   **Consecutive View**: Aggregates adjacent tasks with the same ID.
 -   **Grouped View**: Totals for the day per Task ID.
 -   **Type Selector**: Switch between "Real Time" and "Tracking Time" (Reported).
+    - This is currentöy not implemented yet. So the switch is present in the UI, the corresponding fields are defined in the database schema, but apart from the switch the UI does not reflect the type selection yet.
 -   **Visuals**:
     -   Transferred status (transfer=0) dims the row.
     -   PAUSE tasks are dimmed/highlighted.
