@@ -27,7 +27,8 @@
 
 <body class="font-sans">
 
-    <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <div id="app-container" class="container mx-auto px-4 py-8 max-w-7xl"
+        style="opacity: 0; transition: opacity 0.15s ease-in;">
 
         <!-- Header / Controls -->
         <header class="bg-white rounded-lg shadow p-6 mb-8 flex flex-col md:flex-row justify-between items-end gap-4">

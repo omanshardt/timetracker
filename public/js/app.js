@@ -293,10 +293,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 headline.innerText = d.toLocaleDateString('de-DE', options);
 
                 renderAll();
+
+                // Reveal content after first load
+                const appContainer = document.getElementById('app-container');
+                if (appContainer) appContainer.style.opacity = '1';
             })
             .catch(err => {
                 console.error(err);
                 headline.innerText = "Error loading data";
+                const appContainer = document.getElementById('app-container');
+                if (appContainer) appContainer.style.opacity = '1';
             });
     }
 

@@ -18,7 +18,8 @@
 
 <body class="font-sans">
 
-    <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <div id="app-container" class="container mx-auto px-4 py-8 max-w-5xl"
+        style="opacity: 0; transition: opacity 0.15s ease-in;">
 
         <!-- Header -->
         <header class="bg-white rounded-lg shadow p-6 mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
@@ -300,8 +301,13 @@
                     const json = await res.json();
                     workDaysData = json.data || [];
                     renderCalendar();
+                    // Reveal content after first load
+                    const appContainer = document.getElementById('app-container');
+                    if (appContainer) appContainer.style.opacity = '1';
                 } catch (err) {
                     console.error('Failed to load work days:', err);
+                    const appContainer = document.getElementById('app-container');
+                    if (appContainer) appContainer.style.opacity = '1';
                 }
             }
 
