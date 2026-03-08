@@ -246,6 +246,69 @@ try {
         $sum_tracking += calculate_duration($row['start_time_reported'], $row['end_time_reported']);
     }
 
+    // --- 5. Balance Data for this date ---
+    $balance_data = null;
+
+    // Check if this date is a work day
+    $wd_stmt = $pdo->prepare("SELECT * FROM work_days WHERE work_date = :date");
+    $wd_stmt->execute(['date' => $date]);
+    $work_day = $wd_stmt->fetch();
+
+    if ($work_day) {
+        $required_parts = explode(':', $work_day['required_time']);
+        $required_min = ((int) $required_parts[0]) * 60 + ((int) $required_parts[1]);
+        $delta_min = $sum_real - $required_min;
+
+        // Calculate cumulative balance up to and including this date
+        // Get all work_days up to this date
+        $cum_stmt = $pdo->prepare("
+            SELECT wd.work_date, wd.required_time,
+                   COALESCE(SUM(
+                       CASE WHEN t.transfer != 0 AND t.task_id NOT LIKE '%PAUSE%'
+                            AND t.start_time IS NOT NULL AND t.end_time IS NOT NULL
+                            THEN TIMESTAMPDIFF(MINUTE, t.start_time, t.end_time)
+                            ELSE 0
+                       END
+                   ), 0) AS worked_min
+            FROM work_days wd
+            LEFT JOIN timetracker t ON t.reporting_date = wd.work_date
+            WHERE wd.work_date <= :date
+            GROUP BY wd.work_date, wd.required_time
+            ORDER BY wd.work_date ASC
+        ");
+        $cum_stmt->execute(['date' => $date]);
+        $cum_rows = $cum_stmt->fetchAll();
+
+        $cumulative = 0;
+        foreach ($cum_rows as $cr) {
+            $rp = explode(':', $cr['required_time']);
+            $req = ((int) $rp[0]) * 60 + ((int) $rp[1]);
+            $cumulative += ((int) $cr['worked_min']) - $req;
+        }
+
+        $fmt = function ($min) {
+            $sign = $min >= 0 ? '+' : '-';
+            $abs = abs($min);
+            return $sign . sprintf("%02d:%02d", floor($abs / 60), $abs % 60);
+        };
+
+        $balance_data = [
+            'is_workday' => true,
+            'required_min' => $required_min,
+            'required_formatted' => sprintf("%02d:%02d", floor($required_min / 60), $required_min % 60),
+            'worked_min' => $sum_real,
+            'worked_formatted' => format_duration($sum_real),
+            'delta_min' => $delta_min,
+            'delta_formatted' => $fmt($delta_min),
+            'cumulative_min' => $cumulative,
+            'cumulative_formatted' => $fmt($cumulative),
+        ];
+    } else {
+        $balance_data = [
+            'is_workday' => false,
+        ];
+    }
+
     echo json_encode([
         'raw' => $processed_raw,
         'consecutive' => $consecutive_data,
@@ -253,7 +316,8 @@ try {
         'summary' => [
             'real' => format_duration($sum_real),
             'tracking' => format_duration($sum_tracking)
-        ]
+        ],
+        'balance' => $balance_data
     ]);
 
 } catch (PDOException $e) {

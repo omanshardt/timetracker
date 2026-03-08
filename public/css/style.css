@@ -12,7 +12,9 @@ body {
 [data-theme="dark"] .bg-white,
 [data-theme="dark"] #inline-edit-modal,
 [data-theme="dark"] #add-entry-modal > div,
-[data-theme="dark"] #delete-confirm-modal .bg-white {
+[data-theme="dark"] #delete-confirm-modal .bg-white,
+[data-theme="dark"] #workday-modal > div,
+[data-theme="dark"] #no-workday-info {
   background-color: var(--color-bg-card) !important;
   color: var(--color-text-base);
   border-color: var(--color-border) !important;

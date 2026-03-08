@@ -306,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderConsecutive();
         renderGrouped();
         updateSummary();
+        updateBalance();
     }
 
     function updateSummary() {
@@ -315,6 +316,45 @@ document.addEventListener('DOMContentLoaded', () => {
         totalDurationEl.innerText = txt;
         if (tableFooterSumEl) {
             tableFooterSumEl.innerText = txt;
+        }
+    }
+
+    function updateBalance() {
+        const balanceWidget = document.getElementById('balance-widget');
+        const noWorkdayInfo = document.getElementById('no-workday-info');
+        const balanceDelta = document.getElementById('balance-delta');
+        const balanceCumulative = document.getElementById('balance-cumulative');
+        const balanceIcon = document.getElementById('balance-icon');
+
+        if (!balanceWidget || !currentData.balance) {
+            if (balanceWidget) balanceWidget.classList.add('hidden');
+            if (noWorkdayInfo) noWorkdayInfo.classList.add('hidden');
+            return;
+        }
+
+        const b = currentData.balance;
+
+        if (!b.is_workday) {
+            balanceWidget.classList.add('hidden');
+            if (noWorkdayInfo) noWorkdayInfo.classList.remove('hidden');
+            return;
+        }
+
+        // It's a work day — show the balance widget
+        if (noWorkdayInfo) noWorkdayInfo.classList.add('hidden');
+        balanceWidget.classList.remove('hidden');
+
+        balanceDelta.textContent = b.delta_formatted;
+        balanceCumulative.textContent = b.cumulative_formatted;
+
+        // Color the widget based on cumulative balance
+        const isPositive = b.cumulative_min >= 0;
+        if (isPositive) {
+            balanceWidget.className = 'rounded-lg shadow-md p-6 mb-10 flex justify-between items-center bg-green-600 text-white';
+            balanceIcon.className = 'rounded-full p-3 bg-green-500';
+        } else {
+            balanceWidget.className = 'rounded-lg shadow-md p-6 mb-10 flex justify-between items-center bg-red-600 text-white';
+            balanceIcon.className = 'rounded-full p-3 bg-red-500';
         }
     }
 
@@ -329,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = isYes ? 'Yes' : 'No';
         const colorClass = isYes ? 'badge-success' : 'badge-error';
         const fieldName = field === 'transfer' ? 'Transfer' : (field === 'transfered_intern' ? 'Int' : 'Jira');
-        
+
         return `<button class="inline-edit-trigger badge ${colorClass} hover:opacity-80 transition-opacity" 
                         data-id="${inlineEditState.id}" data-field="${field}" data-val="${val}" 
                         aria-label="Change ${fieldName} status (currently ${text})">

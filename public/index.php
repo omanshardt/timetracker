@@ -32,14 +32,20 @@
             <div class="flex flex-wrap items-end gap-4">
                 <!-- Theme Toggle Button -->
                 <div class="flex flex-col">
-                    <button id="theme-toggle" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 p-2 rounded-lg transition-colors flex items-center gap-2" aria-label="Toggle dark mode">
+                    <button id="theme-toggle"
+                        class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 p-2 rounded-lg transition-colors flex items-center gap-2"
+                        aria-label="Toggle dark mode">
                         <!-- Sun Icon (Light Mode) -->
-                        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M7.757 6.343l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M7.757 6.343l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                         </svg>
                         <!-- Moon Icon (Dark Mode) -->
-                        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                         </svg>
                     </button>
                 </div>
@@ -62,13 +68,29 @@
                     </select>
                 </div>
 
+                <!-- Work Days Link -->
+                <div>
+                    <a href="workdays.php"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded shadow transition-colors flex items-center gap-2"
+                        aria-label="Manage work days">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Work Days
+                    </a>
+                </div>
+
                 <!-- Add Entry Button -->
                 <div>
                     <button id="btn-open-add-modal"
                         class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition-colors flex items-center gap-2"
                         aria-label="Add new time entry">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                                clip-rule="evenodd" />
                         </svg>
                         Add Entry
                     </button>
@@ -82,14 +104,44 @@
         <!-- Summary Widget (Top) -->
         <div class="bg-blue-600 rounded-lg shadow-md p-6 mb-10 text-white flex justify-between items-center">
             <div>
-                <span class="text-blue-100 text-sm font-semibold uppercase tracking-wider">Total Duration (Active)</span>
+                <span class="text-blue-100 text-sm font-semibold uppercase tracking-wider">Total Duration
+                    (Active)</span>
                 <p class="text-3xl font-bold" id="total-duration">--:--</p>
             </div>
             <div class="bg-blue-500 rounded-full p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-100" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
+        </div>
+
+        <!-- Balance Widget -->
+        <div id="balance-widget" class="rounded-lg shadow-md p-6 mb-10 flex justify-between items-center hidden">
+            <div class="flex gap-8 items-center">
+                <div>
+                    <span class="text-sm font-semibold uppercase tracking-wider opacity-80">Today's Delta</span>
+                    <p class="text-2xl font-bold" id="balance-delta">--:--</p>
+                </div>
+                <div class="w-px h-12 bg-white opacity-30"></div>
+                <div>
+                    <span class="text-sm font-semibold uppercase tracking-wider opacity-80">Running Balance</span>
+                    <p class="text-2xl font-bold" id="balance-cumulative">--:--</p>
+                </div>
+            </div>
+            <div id="balance-icon" class="rounded-full p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- No Work Day Info -->
+        <div id="no-workday-info" class="bg-gray-100 rounded-lg shadow-md p-4 mb-10 text-gray-500 text-center hidden">
+            <p class="text-sm">No work required for this day — time logged here does not affect your balance.</p>
         </div>
 
         <!-- Table 1: Detailed View -->
@@ -219,15 +271,19 @@
     </div>
 
     <!-- Inline Edit Modal (Hidden, positioned dynamically via JS) -->
-    <div id="inline-edit-modal" class="absolute hidden bg-white border border-gray-200 shadow-2xl rounded-lg p-5 z-40 text-sm w-56 transform transition-all">
-        <div class="mb-4 font-bold text-gray-900 text-base border-b border-gray-100 pb-2" id="inline-edit-title">Update Status</div>
+    <div id="inline-edit-modal"
+        class="absolute hidden bg-white border border-gray-200 shadow-2xl rounded-lg p-5 z-40 text-sm w-56 transform transition-all">
+        <div class="mb-4 font-bold text-gray-900 text-base border-b border-gray-100 pb-2" id="inline-edit-title">Update
+            Status</div>
         <div class="flex items-center gap-6 mb-5">
             <label class="inline-flex items-center cursor-pointer group">
-                <input type="radio" name="inline-edit-value" value="1" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                <input type="radio" name="inline-edit-value" value="1"
+                    class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
                 <span class="ml-2 text-gray-700 group-hover:text-blue-600 transition-colors">Yes</span>
             </label>
             <label class="inline-flex items-center cursor-pointer group">
-                <input type="radio" name="inline-edit-value" value="0" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                <input type="radio" name="inline-edit-value" value="0"
+                    class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
                 <span class="ml-2 text-gray-700 group-hover:text-red-600 transition-colors">No</span>
             </label>
         </div>
