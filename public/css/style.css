@@ -52,6 +52,20 @@ body {
   background-color: var(--color-bg-card) !important;
   color: var(--color-text-base) !important;
   border-color: var(--color-border) !important;
+  color-scheme: dark;
+}
+
+/* Status bar icon backgrounds in dark mode */
+[data-theme="dark"] .bg-blue-100 {
+  background-color: rgba(59, 130, 246, 0.25) !important;
+}
+
+[data-theme="dark"] .bg-green-100 {
+  background-color: rgba(34, 197, 94, 0.25) !important;
+}
+
+[data-theme="dark"] .bg-red-100 {
+  background-color: rgba(239, 68, 68, 0.25) !important;
 }
 
 [data-theme="dark"] .bg-blue-50 {

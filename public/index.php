@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Tracker Overview</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Apply theme immediately to prevent flash of light mode
+        (function () {
+            var theme = localStorage.getItem('timetracker_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <link rel="stylesheet" href="css/style.css">
     <style>
         .dimmed {
