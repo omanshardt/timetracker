@@ -27,6 +27,17 @@ body {
   color: var(--color-text-muted);
 }
 
+[data-theme="dark"] .bg-gray-300,
+[data-theme="dark"] .bg-gray-100 {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: var(--color-text-base) !important;
+}
+
+[data-theme="dark"] .bg-gray-300:hover,
+[data-theme="dark"] .bg-gray-100:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
 [data-theme="dark"] td,
 [data-theme="dark"] th,
 [data-theme="dark"] .border-b,
