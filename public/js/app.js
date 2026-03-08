@@ -320,41 +320,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateBalance() {
-        const balanceWidget = document.getElementById('balance-widget');
-        const noWorkdayInfo = document.getElementById('no-workday-info');
+        const deltaSection = document.getElementById('balance-delta-section');
+        const deltaIcon = document.getElementById('delta-icon');
         const balanceDelta = document.getElementById('balance-delta');
-        const balanceCumulative = document.getElementById('balance-cumulative');
+        const balanceCumSection = document.getElementById('balance-cumulative-section');
         const balanceIcon = document.getElementById('balance-icon');
+        const balanceCumulative = document.getElementById('balance-cumulative');
 
-        if (!balanceWidget || !currentData.balance) {
-            if (balanceWidget) balanceWidget.classList.add('hidden');
-            if (noWorkdayInfo) noWorkdayInfo.classList.add('hidden');
+        if (!currentData.balance) {
+            if (deltaSection) deltaSection.classList.add('hidden');
             return;
         }
 
         const b = currentData.balance;
 
-        if (!b.is_workday) {
-            balanceWidget.classList.add('hidden');
-            if (noWorkdayInfo) noWorkdayInfo.classList.remove('hidden');
-            return;
-        }
-
-        // It's a work day — show the balance widget
-        if (noWorkdayInfo) noWorkdayInfo.classList.add('hidden');
-        balanceWidget.classList.remove('hidden');
-
-        balanceDelta.textContent = b.delta_formatted;
+        // Running balance is ALWAYS visible
         balanceCumulative.textContent = b.cumulative_formatted;
+        const cumPositive = b.cumulative_min >= 0;
+        balanceIcon.className = `rounded-full p-2 ${cumPositive ? 'bg-green-100' : 'bg-red-100'}`;
+        balanceIcon.querySelector('svg').className = `h-5 w-5 ${cumPositive ? 'text-green-600' : 'text-red-600'}`;
+        balanceCumulative.className = `text-lg font-bold leading-tight ${cumPositive ? 'text-green-700' : 'text-red-700'}`;
 
-        // Color the widget based on cumulative balance
-        const isPositive = b.cumulative_min >= 0;
-        if (isPositive) {
-            balanceWidget.className = 'rounded-lg shadow-md p-6 mb-10 flex justify-between items-center bg-green-600 text-white';
-            balanceIcon.className = 'rounded-full p-3 bg-green-500';
+        if (b.is_workday) {
+            // Show delta section on work days
+            deltaSection.classList.remove('hidden');
+            balanceDelta.textContent = b.delta_formatted;
+
+            const deltaPositive = b.delta_min >= 0;
+            deltaIcon.className = `rounded-full p-2 ${deltaPositive ? 'bg-green-100' : 'bg-red-100'}`;
+            deltaIcon.querySelector('svg').className = `h-5 w-5 ${deltaPositive ? 'text-green-600' : 'text-red-600'}`;
+            balanceDelta.className = `text-lg font-bold leading-tight ${deltaPositive ? 'text-green-700' : 'text-red-700'}`;
         } else {
-            balanceWidget.className = 'rounded-lg shadow-md p-6 mb-10 flex justify-between items-center bg-red-600 text-white';
-            balanceIcon.className = 'rounded-full p-3 bg-red-500';
+            deltaSection.classList.add('hidden');
         }
     }
 

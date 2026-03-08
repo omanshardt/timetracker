@@ -11,10 +11,9 @@ body {
 [data-theme="dark"] header,
 [data-theme="dark"] .bg-white,
 [data-theme="dark"] #inline-edit-modal,
-[data-theme="dark"] #add-entry-modal > div,
+[data-theme="dark"] #add-entry-modal>div,
 [data-theme="dark"] #delete-confirm-modal .bg-white,
-[data-theme="dark"] #workday-modal > div,
-[data-theme="dark"] #no-workday-info {
+[data-theme="dark"] #workday-modal>div {
   background-color: var(--color-bg-card) !important;
   color: var(--color-text-base);
   border-color: var(--color-border) !important;
@@ -68,9 +67,26 @@ body {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.18) !important;
 }
 
-h1 { font-size: var(--font-4xl); line-height: 1.2; font-weight: 700; margin-bottom: var(--space-4); }
-h2 { font-size: var(--font-3xl); line-height: 1.2; font-weight: 600; margin-bottom: var(--space-4); }
-h3 { font-size: var(--font-2xl); line-height: 1.2; font-weight: 500; margin-bottom: var(--space-3); }
+h1 {
+  font-size: var(--font-4xl);
+  line-height: 1.2;
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+}
+
+h2 {
+  font-size: var(--font-3xl);
+  line-height: 1.2;
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+h3 {
+  font-size: var(--font-2xl);
+  line-height: 1.2;
+  font-weight: 500;
+  margin-bottom: var(--space-3);
+}
 
 .container {
   max-width: 80rem;
@@ -101,9 +117,20 @@ textarea:focus-visible {
   line-height: 1;
 }
 
-.badge-success { background-color: #dcfce7; color: #166534; }
-.badge-error { background-color: #fee2e2; color: #991b1b; }
-.badge-warning { background-color: #fef3c7; color: #92400e; }
+.badge-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.badge-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
 
 /* Table Improvements */
 table {

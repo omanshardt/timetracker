@@ -98,51 +98,59 @@
             </div>
         </header>
 
-        <!-- Headline -->
-        <h2 id="day-headline" class="text-2xl font-semibold mb-6 text-gray-800">Loading...</h2>
-
-        <!-- Summary Widget (Top) -->
-        <div class="bg-blue-600 rounded-lg shadow-md p-6 mb-10 text-white flex justify-between items-center">
-            <div>
-                <span class="text-blue-100 text-sm font-semibold uppercase tracking-wider">Total Duration
-                    (Active)</span>
-                <p class="text-3xl font-bold" id="total-duration">--:--</p>
+        <!-- Unified Status Bar -->
+        <div class="bg-white rounded-lg shadow-md p-5 mb-8 flex flex-wrap items-center gap-6">
+            <!-- Day Headline -->
+            <div class="flex-1 min-w-[180px]">
+                <h2 id="day-headline" class="text-xl font-semibold text-gray-800 mb-0">Loading...</h2>
             </div>
-            <div class="bg-blue-500 rounded-full p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-100" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-        </div>
 
-        <!-- Balance Widget -->
-        <div id="balance-widget" class="rounded-lg shadow-md p-6 mb-10 flex justify-between items-center hidden">
-            <div class="flex gap-8 items-center">
-                <div>
-                    <span class="text-sm font-semibold uppercase tracking-wider opacity-80">Today's Delta</span>
-                    <p class="text-2xl font-bold" id="balance-delta">--:--</p>
+            <!-- Total Duration -->
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-100 rounded-full p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </div>
-                <div class="w-px h-12 bg-white opacity-30"></div>
                 <div>
-                    <span class="text-sm font-semibold uppercase tracking-wider opacity-80">Running Balance</span>
-                    <p class="text-2xl font-bold" id="balance-cumulative">--:--</p>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Worked</span>
+                    <p class="text-lg font-bold text-gray-900 leading-tight" id="total-duration">--:--</p>
                 </div>
             </div>
-            <div id="balance-icon" class="rounded-full p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                </svg>
+
+            <!-- Today's Delta (only visible on work days) -->
+            <div id="balance-delta-section" class="flex items-center gap-3 hidden">
+                <div id="delta-icon" class="rounded-full p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Delta</span>
+                    <p class="text-lg font-bold leading-tight" id="balance-delta">--:--</p>
+                </div>
+            </div>
+
+            <!-- Running Balance (always visible) -->
+            <div id="balance-cumulative-section" class="flex items-center gap-3">
+                <div id="balance-icon" class="rounded-full p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Balance</span>
+                    <p class="text-lg font-bold leading-tight" id="balance-cumulative">--:--</p>
+                </div>
             </div>
         </div>
 
-        <!-- No Work Day Info -->
-        <div id="no-workday-info" class="bg-gray-100 rounded-lg shadow-md p-4 mb-10 text-gray-500 text-center hidden">
-            <p class="text-sm">No work required for this day — time logged here does not affect your balance.</p>
-        </div>
 
         <!-- Table 1: Detailed View -->
         <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
