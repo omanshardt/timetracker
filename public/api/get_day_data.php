@@ -5,15 +5,31 @@ require_once __DIR__ . '/../../config/db.php';
 header('Content-Type: application/json');
 
 $date = $_GET['date'] ?? date('Y-m-d');
+$ids = $_GET['ids'] ?? null;
 
 try {
+    $idFilter = '';
+    $params = ['date' => $date];
+    if ($ids) {
+        $idsArray = explode(',', $ids);
+        $placeholders = [];
+        foreach ($idsArray as $index => $id) {
+            $key = 'id_' . $index;
+            $placeholders[] = ':' . $key;
+            $params[$key] = (int)$id;
+        }
+        if (!empty($placeholders)) {
+            $idFilter = " AND timetracker.id IN (" . implode(',', $placeholders) . ")";
+        }
+    }
     $stmt = $pdo->prepare("
         SELECT * 
         FROM timetracker 
-        WHERE reporting_date = :date 
+        WHERE reporting_date = :date
+        $idFilter
         ORDER BY start_time ASC
     ");
-    $stmt->execute(['date' => $date]);
+    $stmt->execute($params);
     $raw_data = $stmt->fetchAll();
 
     // --- Helper Functions ---
