@@ -26,7 +26,9 @@ foreach ($required_fields as $field) {
     }
 }
 
-$id = (int) $input['id'];
+$idsInput = $input['id'];
+$ids = is_array($idsInput) ? $idsInput : [$idsInput];
+$ids = array_map('intval', $ids);
 $field = $input['field'];
 $value = (int) $input['value'];
 
@@ -44,22 +46,25 @@ if (!in_array($value, [0, 1], true)) {
     exit;
 }
 
+if (empty($ids)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'No IDs provided']);
+    exit;
+}
+
 try {
-    // Dynamic field name format is safe here because we validated it against an allowlist above
-    $stmt = $pdo->prepare("UPDATE timetracker SET {$field} = :val WHERE id = :id");
-
-    $stmt->execute([
-        'val' => $value,
-        'id' => $id
-    ]);
-
-    if ($stmt->rowCount() > 0) {
-        echo json_encode(['success' => true]);
-    } else {
-        // Technically successful execution but no rows modified (maybe ID doesn't exist or value was already the same)
-        // Let's assume ID check is fine
-        echo json_encode(['success' => true, 'message' => 'No rows updated.']);
+    $excludeClause = '';
+    if ($field === 'transfered_jira') {
+        $excludeClause = " AND LOWER(TRIM(task_id)) != 'pause'";
     }
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $stmt = $pdo->prepare("UPDATE timetracker SET {$field} = ? WHERE id IN ($placeholders) $excludeClause");
+    
+    $params = array_merge([$value], $ids);
+    $stmt->execute($params);
+
+    echo json_encode(['success' => true]);
 
 } catch (PDOException $e) {
     http_response_code(500);

@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // If clicking outside inline modal AND not clicking a trigger button, close it
         if (inlineEditModal && !inlineEditModal.classList.contains('hidden') && !inlineEditModal.contains(e.target)) {
             // Check if what we clicked is one of our trigger buttons
-            const isTrigger = e.target.closest('.inline-edit-trigger');
+            const isTrigger = e.target.closest('.inline-edit-trigger') || e.target.closest('.inline-edit-all-trigger');
             if (!isTrigger) {
                 closeInlineModal();
             }
@@ -151,8 +151,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!selectedRadio || !inlineEditState.id) return;
 
             const value = selectedRadio.value;
+            let ids = inlineEditState.id;
+            if (ids === 'all') {
+                ids = [];
+                if (currentData && currentData.raw) {
+                    currentData.raw.forEach(row => {
+                        if (inlineEditState.field === 'transfered_jira' && row.task_id && row.task_id.toLowerCase().trim() === 'pause') {
+                            return;
+                        }
+                        ids.push(row.id);
+                    });
+                }
+            }
+
             const payload = {
-                id: inlineEditState.id,
+                id: ids,
                 field: inlineEditState.field,
                 value: value
             };
@@ -322,6 +335,36 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAll();
         });
     }
+
+    document.querySelectorAll('.inline-edit-all-trigger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const field = btn.getAttribute('data-field');
+            const val = '1'; // Default value: yes
+
+            inlineEditState = { id: 'all', field, triggerBtn: btn };
+
+            let fieldName = 'Internal';
+            if (field === 'transfered_jira') fieldName = 'Jira';
+
+            inlineEditTitle.innerText = `Transfer ALL to ${fieldName}?`;
+
+            const radio = document.querySelector(`input[name="inline-edit-value"][value="${val}"]`);
+            if (radio) radio.checked = true;
+
+            // Position Modal
+            const rect = btn.getBoundingClientRect();
+            inlineEditModal.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+
+            let leftPos = rect.left + window.scrollX - 50;
+            if (leftPos + 200 > window.innerWidth) {
+                leftPos = window.innerWidth - 210;
+            }
+            inlineEditModal.style.left = leftPos + 'px';
+
+            inlineEditModal.classList.remove('hidden');
+        });
+    });
 
     function fetchData(date) {
         headline.innerText = `Loading data for ${date}...`;

@@ -212,11 +212,25 @@
                                 class="w-px whitespace-nowrap px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Transfer</th>
                             <th scope="col"
-                                class="w-px whitespace-nowrap px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Int</th>
+                                class="w-px whitespace-nowrap px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <div class="flex flex-col items-center gap-1">
+                                    <span>Int</span>
+                                    <button class="inline-edit-all-trigger bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 px-1.5 py-0.5 rounded text-[10px] tracking-normal normal-case font-semibold transition-colors mt-0.5"
+                                            data-field="transfered_intern" title="Set all to yes/no">
+                                        All
+                                    </button>
+                                </div>
+                            </th>
                             <th scope="col"
-                                class="w-px whitespace-nowrap px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Jira</th>
+                                class="w-px whitespace-nowrap px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <div class="flex flex-col items-center gap-1">
+                                    <span>Jira</span>
+                                    <button class="inline-edit-all-trigger bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 px-1.5 py-0.5 rounded text-[10px] tracking-normal normal-case font-semibold transition-colors mt-0.5"
+                                            data-field="transfered_jira" title="Set all to yes/no">
+                                        All
+                                    </button>
+                                </div>
+                            </th>
                             <th scope="col" class="w-px whitespace-nowrap relative px-6 py-3">
                                 <span class="sr-only">Actions</span>
                             </th>
