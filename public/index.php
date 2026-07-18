@@ -31,163 +31,157 @@
         style="opacity: 0; transition: opacity 0.15s ease-in;">
 
         <!-- Sticky Header Wrapper -->
-        <div class="sticky top-0 z-40 bg-[var(--color-bg-base)] pt-8 pb-2 mb-6">
-            <!-- Header / Controls -->
-        <header class="bg-white rounded-lg shadow p-6 mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 mb-0">Time Tracker Overview</h1>
-                <p class="text-gray-500 text-sm">Manage and track your daily tasks efficiently.</p>
-            </div>
+        <div class="sticky top-0 z-40 bg-[var(--color-bg-base)] pt-4 pb-2 mb-6">
+            <!-- Combined Header & Status Bar Container -->
+            <header class="bg-white rounded-lg shadow flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
+                
+                <!-- Row 1: Header / Controls -->
+                <div class="px-6 py-3.5 flex flex-col md:flex-row justify-between items-center md:items-end gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 mb-0">Time Tracker Overview</h1>
+                        <p class="text-gray-500 text-xs">Manage and track your daily tasks efficiently.</p>
+                    </div>
 
-            <div class="flex flex-wrap items-end gap-4">
-                <!-- Theme Toggle Button -->
-                <div class="flex flex-col">
-                    <button id="theme-toggle"
-                        class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 p-2 rounded-lg transition-colors flex items-center gap-2"
-                        aria-label="Toggle dark mode">
-                        <!-- Sun Icon (Light Mode) -->
-                        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M7.757 6.343l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                        </svg>
-                        <!-- Moon Icon (Dark Mode) -->
-                        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                        </svg>
+                    <div class="flex flex-wrap items-end gap-3">
+                        <!-- Theme Toggle Button -->
+                        <div class="flex flex-col">
+                            <button id="theme-toggle"
+                                class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 p-2 rounded-lg transition-colors flex items-center gap-2"
+                                aria-label="Toggle dark mode">
+                                <!-- Sun Icon (Light Mode) -->
+                                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M7.757 6.343l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                                </svg>
+                                <!-- Moon Icon (Dark Mode) -->
+                                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Date Navigation Buttons -->
+                        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                            <!-- Gehe einen Tag zurück -->
+                            <button id="btn-prev-day" 
+                                class="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
+                                title="Vorheriger Tag">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <!-- Gehe zu heute -->
+                            <button id="btn-today" 
+                                class="px-2.5 py-0.5 text-xs font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
+                                title="Heute">
+                                Heute
+                            </button>
+                            <!-- Gehe einen Tag nach vorne -->
+                            <button id="btn-next-day" 
+                                class="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
+                                title="Nächster Tag">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Date Picker -->
+                        <div class="flex flex-col">
+                            <label for="date-picker" class="block text-xs font-medium text-gray-500 mb-0.5">Date</label>
+                            <input type="date" id="date-picker"
+                                class="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 py-1.5 px-2 border text-sm"
+                                value="<?php echo date('Y-m-d'); ?>">
+                        </div>
+
+                        <!-- Work Days Link -->
+                        <div>
+                            <a href="workdays.php"
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1.5 px-3 rounded shadow transition-colors flex items-center gap-1.5 text-sm"
+                                aria-label="Manage work days">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Work Days
+                            </a>
+                        </div>
+
+                        <!-- Add Entry Button -->
+                        <div>
+                            <button id="btn-open-add-modal"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-3 rounded shadow transition-colors flex items-center gap-1.5 text-sm"
+                                aria-label="Add new time entry">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Add Entry
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Date Navigation Buttons -->
-                <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
-                    <!-- Gehe einen Tag zurück -->
-                    <button id="btn-prev-day" 
-                        class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
-                        title="Vorheriger Tag">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <!-- Gehe zu heute -->
-                    <button id="btn-today" 
-                        class="px-3 py-1 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
-                        title="Heute">
-                        Heute
-                    </button>
-                    <!-- Gehe einen Tag nach vorne -->
-                    <button id="btn-next-day" 
-                        class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
-                        title="Nächster Tag">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+                <!-- Row 2: Unified Status Bar -->
+                <div class="px-6 py-2.5 flex flex-wrap items-center gap-6">
+                    <!-- Day Headline -->
+                    <div class="flex-1 min-w-[180px]">
+                        <h2 id="day-headline" class="text-lg font-semibold text-gray-800 mb-0">Loading...</h2>
+                    </div>
+
+                    <!-- Total Duration -->
+                    <div class="flex items-center gap-2.5">
+                        <div class="bg-blue-100 rounded-full p-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Worked</span>
+                            <p class="text-base font-bold text-gray-900 leading-tight" id="total-duration">--:--</p>
+                        </div>
+                    </div>
+
+                    <!-- Today's Delta (only visible on work days) -->
+                    <div id="balance-delta-section" class="flex items-center gap-2.5 hidden">
+                        <div id="delta-icon" class="rounded-full p-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Delta</span>
+                            <p class="text-base font-bold leading-tight" id="balance-delta">--:--</p>
+                        </div>
+                    </div>
+
+                    <!-- Running Balance (always visible) -->
+                    <div id="balance-cumulative-section" class="flex items-center gap-2.5">
+                        <div id="balance-icon" class="rounded-full p-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Balance</span>
+                            <p class="text-base font-bold leading-tight" id="balance-cumulative">--:--</p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Date Picker -->
-                <div class="flex flex-col">
-                    <label for="date-picker" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" id="date-picker"
-                        class="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 border"
-                        value="<?php echo date('Y-m-d'); ?>">
-                </div>
-
-                <!-- Type Selector -->
-                <!--
-                <div class="flex flex-col">
-                    <label for="type-selector" class="block text-sm font-medium text-gray-700 mb-1">Time Type</label>
-                    <select id="type-selector"
-                        class="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 border bg-white">
-                        <option value="real">Real Time</option>
-                        <option value="tracking">Tracking Time</option>
-                    </select>
-                </div>
-                -->
-
-                <!-- Work Days Link -->
-                <div>
-                    <a href="workdays.php"
-                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded shadow transition-colors flex items-center gap-2"
-                        aria-label="Manage work days">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Work Days
-                    </a>
-                </div>
-
-                <!-- Add Entry Button -->
-                <div>
-                    <button id="btn-open-add-modal"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition-colors flex items-center gap-2"
-                        aria-label="Add new time entry">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Add Entry
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Unified Status Bar -->
-        <div class="bg-white rounded-lg shadow-md p-5 mb-0 flex flex-wrap items-center gap-6">
-            <!-- Day Headline -->
-            <div class="flex-1 min-w-[180px]">
-                <h2 id="day-headline" class="text-xl font-semibold text-gray-800 mb-0">Loading...</h2>
-            </div>
-
-            <!-- Total Duration -->
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-100 rounded-full p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div>
-                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Worked</span>
-                    <p class="text-lg font-bold text-gray-900 leading-tight" id="total-duration">--:--</p>
-                </div>
-            </div>
-
-            <!-- Today's Delta (only visible on work days) -->
-            <div id="balance-delta-section" class="flex items-center gap-3 hidden">
-                <div id="delta-icon" class="rounded-full p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div>
-                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Delta</span>
-                    <p class="text-lg font-bold leading-tight" id="balance-delta">--:--</p>
-                </div>
-            </div>
-
-            <!-- Running Balance (always visible) -->
-            <div id="balance-cumulative-section" class="flex items-center gap-3">
-                <div id="balance-icon" class="rounded-full p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                    </svg>
-                </div>
-                <div>
-                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Balance</span>
-                    <p class="text-lg font-bold leading-tight" id="balance-cumulative">--:--</p>
-                </div>
-            </div>
+            </header>
         </div>
-        </div> <!-- End of Sticky Header Wrapper -->
 
 
         <!-- Table 1: Detailed View -->
