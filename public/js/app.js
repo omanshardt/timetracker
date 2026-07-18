@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono" title="${endTitle}">
                     <span class="${endClass}">${end ? end.substring(0, 5) : '-'}</span>
                 </td>
-                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium font-mono">
+                <td class="w-px whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium font-mono" title="ID: ${row.id}">
                     ${row.task_id || ''}
                 </td>
                 <td class="w-full px-6 py-4 text-sm text-gray-500 break-words">
