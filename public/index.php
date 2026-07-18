@@ -27,10 +27,12 @@
 
 <body class="font-sans">
 
-    <div id="app-container" class="container mx-auto px-4 py-8 max-w-7xl"
+    <div id="app-container" class="container mx-auto px-4 pb-8 pt-0 max-w-7xl"
         style="opacity: 0; transition: opacity 0.15s ease-in;">
 
-        <!-- Header / Controls -->
+        <!-- Sticky Header Wrapper -->
+        <div class="sticky top-0 z-40 bg-[var(--color-bg-base)] pt-8 pb-2 mb-6">
+            <!-- Header / Controls -->
         <header class="bg-white rounded-lg shadow p-6 mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 mb-0">Time Tracker Overview</h1>
@@ -134,7 +136,7 @@
         </header>
 
         <!-- Unified Status Bar -->
-        <div class="bg-white rounded-lg shadow-md p-5 mb-8 flex flex-wrap items-center gap-6">
+        <div class="bg-white rounded-lg shadow-md p-5 mb-0 flex flex-wrap items-center gap-6">
             <!-- Day Headline -->
             <div class="flex-1 min-w-[180px]">
                 <h2 id="day-headline" class="text-xl font-semibold text-gray-800 mb-0">Loading...</h2>
@@ -185,6 +187,7 @@
                 </div>
             </div>
         </div>
+        </div> <!-- End of Sticky Header Wrapper -->
 
 
         <!-- Table 1: Detailed View -->
