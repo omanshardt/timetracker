@@ -78,7 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let deleteTargetId = null;
 
     // Init
-    typeSelector.value = currentType;
+    if (typeSelector) {
+        typeSelector.value = currentType;
+    }
     datePicker.value = currentDate;
     fetchData(currentDate);
 
@@ -267,18 +269,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Events
-    datePicker.addEventListener('change', (e) => {
-        currentDate = e.target.value;
+    function updateDate(newDate) {
+        currentDate = newDate;
+        datePicker.value = currentDate;
         localStorage.setItem('timetracker_date', currentDate);
         fetchData(currentDate);
+    }
+
+    function shiftDate(days) {
+        const parts = currentDate.split('-');
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        d.setDate(d.getDate() + days);
+        
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        
+        updateDate(`${year}-${month}-${day}`);
+    }
+
+    function setToday() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        updateDate(`${year}-${month}-${day}`);
+    }
+
+    // Events
+    datePicker.addEventListener('change', (e) => {
+        updateDate(e.target.value);
     });
 
-    typeSelector.addEventListener('change', (e) => {
-        currentType = e.target.value;
-        localStorage.setItem('timetracker_type', currentType);
-        renderAll();
-    });
+    const btnPrevDay = document.getElementById('btn-prev-day');
+    const btnNextDay = document.getElementById('btn-next-day');
+    const btnToday = document.getElementById('btn-today');
+
+    if (btnPrevDay) {
+        btnPrevDay.addEventListener('click', () => shiftDate(-1));
+    }
+    if (btnNextDay) {
+        btnNextDay.addEventListener('click', () => shiftDate(1));
+    }
+    if (btnToday) {
+        btnToday.addEventListener('click', setToday);
+    }
+
+    if (typeSelector) {
+        typeSelector.addEventListener('change', (e) => {
+            currentType = e.target.value;
+            localStorage.setItem('timetracker_type', currentType);
+            renderAll();
+        });
+    }
 
     function fetchData(date) {
         headline.innerText = `Loading data for ${date}...`;

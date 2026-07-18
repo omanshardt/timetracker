@@ -55,6 +55,31 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                         </svg>
+                </div>
+
+                <!-- Date Navigation Buttons -->
+                <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                    <!-- Gehe einen Tag zurück -->
+                    <button id="btn-prev-day" 
+                        class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
+                        title="Vorheriger Tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <!-- Gehe zu heute -->
+                    <button id="btn-today" 
+                        class="px-3 py-1 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
+                        title="Heute">
+                        Heute
+                    </button>
+                    <!-- Gehe einen Tag nach vorne -->
+                    <button id="btn-next-day" 
+                        class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-300 transition-colors" 
+                        title="Nächster Tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
                     </button>
                 </div>
 
@@ -67,6 +92,7 @@
                 </div>
 
                 <!-- Type Selector -->
+                <!--
                 <div class="flex flex-col">
                     <label for="type-selector" class="block text-sm font-medium text-gray-700 mb-1">Time Type</label>
                     <select id="type-selector"
@@ -75,6 +101,7 @@
                         <option value="tracking">Tracking Time</option>
                     </select>
                 </div>
+                -->
 
                 <!-- Work Days Link -->
                 <div>
